@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Brief — Strategic Intelligence, March 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050711;
+  --bg-elevated: #0b0f1d;
+  --bg-soft: #101526;
+  --bg-chip: #151b30;
+  --text-main: #f5f7fb;
+  --text-muted: #aeb7c8;
+  --text-soft: #8f99ad;
+  --accent-amber: #ffb869;
+  --accent-cyan: #4fe3ff;
+  --accent-magenta: #ff4fa3;
+  --accent-line: #2b3348;
+  --border-subtle: #252c40;
+  --shadow-strong: 0 20px 55px rgba(0,0,0,0.55);
+  --shadow-soft: 0 14px 32px rgba(0,0,0,0.45);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: radial-gradient(circle at top, #151b30 0%, var(--bg) 45%);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── TOP PROGRESS BAR ─────────────────────────────────────── */
+#topProgressBar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #ffb869, #ff9a3c, #ffdd9a);
+  z-index: 999;
+  transition: width 0.12s linear;
+  box-shadow: 0 0 12px rgba(255,184,105,0.7);
+}
+
+/* ─── SCROLL REVEAL ────────────────────────────────────────── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+[data-reveal][data-delay="1"] { transition-delay: 0.08s; }
+[data-reveal][data-delay="2"] { transition-delay: 0.16s; }
+[data-reveal][data-delay="3"] { transition-delay: 0.24s; }
+
+/* ─── COMMAND CENTER ────────────────────────────────────────── */
+.command-center {
+  position: fixed;
+  top: 60px; left: 10px;
+  width: 40px;
+  max-height: calc(100vh - 80px);
+  background: rgba(5,7,17,0.96);
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+  z-index: 90;
+  overflow: hidden;
+  transition: width 0.22s ease, border-radius 0.22s ease;
+}
+.command-center-inner { display: flex; height: 100%; }
+.command-progress-track {
+  position: relative; width: 6px;
+  margin: 10px 0 10px 10px;
+  border-radius: 999px;
+  background: rgba(255,184,105,0.12);
+  flex-shrink: 0;
+}
+.command-progress-fill {
+  position: absolute; bottom: 0; left: 0;
+  width: 100%; border-radius: 999px;
+  background: linear-gradient(180deg, #ffdd9a, var(--accent-amber));
+  height: 0;
+}
+.command-nav { opacity: 0; pointer-events: none; padding: 10px 10px 10px 12px; transition: opacity 0.18s ease; }
+.command-nav-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-soft); margin-bottom:6px; }
+.command-nav-list { list-style:none; }
+.command-nav-list li { margin-bottom:4px; }
+.command-nav-list a { display:block; font-size:0.8rem; color:var(--text-soft); text-decoration:none; padding:4px 6px; border-radius:6px; white-space:nowrap; transition: color 0.15s, background 0.15s; }
+.command-nav-list a.active { background:rgba(255,184,105,0.12); color:var(--accent-amber); }
+.command-nav-list a:hover { color:var(--accent-amber); }
+.command-center:hover { width: 220px; border-radius: 16px; }
+.command-center:hover .command-nav { opacity:1; pointer-events:auto; }
+@media (max-width:1024px) { .command-center { display:none; } }
+
+/* ─── MOBILE MENU ─────────────────────────────────────────── */
+.mobile-menu-button { position:fixed; right:16px; bottom:16px; z-index:95; display:none; }
+.mobile-menu-button button {
+  border:1px solid var(--border-subtle); background:rgba(5,7,17,0.9); color:var(--text-main);
+  border-radius:999px; padding:8px 14px; font-family:'DM Mono',monospace; font-size:11px;
+  letter-spacing:0.16em; text-transform:uppercase; display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+}
+.mobile-menu-button button span.dot { width:6px; height:6px; border-radius:999px; background:var(--accent-amber); }
+.mobile-menu-overlay { position:fixed; inset:0; background:rgba(5,7,17,0.92); z-index:94; display:none; }
+.mobile-menu-panel { position:absolute; left:0; right:0; bottom:0; padding:18px 20px 26px; background:var(--bg-elevated); border-top-left-radius:18px; border-top-right-radius:18px; border-top:1px solid var(--border-subtle); box-shadow:0 -18px 40px rgba(0,0,0,0.7); }
+.mobile-menu-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.mobile-menu-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-soft); }
+.mobile-menu-close { font-size:0.85rem; color:var(--text-soft); cursor:pointer; }
+.mobile-menu-list { list-style:none; }
+.mobile-menu-list li { margin-bottom:6px; }
+.mobile-menu-list a { font-size:0.95rem; color:var(--text-muted); text-decoration:none; }
+.mobile-menu-list a:hover { color:var(--accent-amber); }
+@media (max-width:1024px) { .mobile-menu-button { display:block; } }
+
+/* ─── LAYOUT ──────────────────────────────────────────────── */
+.page { max-width:1180px; margin:0 auto; padding:0 20px 80px; }
+
+/* ─── HERO ────────────────────────────────────────────────── */
+.hero {
+  position: relative; overflow: hidden;
+  padding: 56px 20px 40px;
+  border-bottom: 1px solid var(--accent-line);
+  background: radial-gradient(circle at top left, rgba(255,184,105,0.18), transparent 55%), #050711;
+  box-shadow: 0 26px 80px rgba(0,0,0,0.7);
+}
+/* Dot-grid texture */
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,184,105,0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none; z-index: 0;
+}
+.hero > * { position: relative; z-index: 1; }
+.hero-grid {
+  max-width:1180px; margin:0 auto;
+  display:grid; grid-template-columns:minmax(0,2.1fr) minmax(0,1.4fr);
+  gap:40px; align-items:center;
+}
+@media (max-width:900px) { .hero-grid { grid-template-columns:1fr; gap:28px; } }
+.hero-meta { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-soft); margin-bottom:18px; }
+.hero-title { font-family:'Space Grotesk',sans-serif; font-size:clamp(2.6rem,5vw,3.4rem); font-weight:700; letter-spacing:-0.04em; line-height:1.05; margin-bottom:14px; }
+.hero-title span { color:var(--accent-amber); }
+.hero-subtitle { font-family:'Space Grotesk',sans-serif; font-size:0.9rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-soft); margin-top:18px; }
+.hero-author { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-muted); margin-top:18px; }
+.hero-tagline { font-size:0.95rem; color:var(--text-muted); margin-top:10px; }
+.hero-chip {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 12px; border-radius:999px;
+  background:rgba(21,27,48,0.9); border:1px solid rgba(255,184,105,0.5);
+  font-family:'DM Mono',monospace; font-size:11px; color:var(--accent-amber); margin-top:18px;
+}
+@keyframes dotPulse {
+  0%,100% { box-shadow:0 0 6px rgba(255,184,105,0.6); }
+  50% { box-shadow:0 0 18px rgba(255,184,105,1),0 0 32px rgba(255,184,105,0.4); }
+}
+.hero-chip span {
+  width:6px; height:6px; border-radius:999px;
+  background:var(--accent-amber);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+.hero-panel {
+  position:relative; background:radial-gradient(circle at top,rgba(255,184,105,0.12),transparent 60%),var(--bg-elevated);
+  border-radius:18px; border:1px solid var(--border-subtle); padding:22px 22px 20px;
+  box-shadow:var(--shadow-soft); overflow:hidden;
+}
+.hero-panel::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,184,105,0.12),transparent 40%); mix-blend-mode:screen; opacity:0.8; pointer-events:none; }
+.hero-panel-inner { position:relative; z-index:1; }
+.hero-panel-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-soft); margin-bottom:10px; }
+.hero-panel-text { font-size:0.95rem; color:var(--text-muted); margin-bottom:14px; }
+.hero-panel-highlight { font-size:0.9rem; color:var(--accent-amber); font-family:'DM Mono',monospace; letter-spacing:0.12em; text-transform:uppercase; margin-top:6px; }
+
+/* Reading Time */
+.hero-reading-time {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 14px; padding: 4px 10px; border-radius: 999px;
+  background: rgba(79,227,255,0.07); border: 1px solid rgba(79,227,255,0.2);
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-cyan);
+}
+.hero-reading-time::before { content: '◷'; font-size: 11px; }
+
+/* ─── STATS STRIP ─────────────────────────────────────────── */
+.stats-strip {
+  border-bottom: 1px solid var(--accent-line);
+  background: rgba(5,7,17,0.92);
+  overflow: hidden;
+}
+.stats-strip-inner {
+  max-width: 1180px; margin: 0 auto;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.stats-strip-inner::-webkit-scrollbar { display: none; }
+.stat-chip {
+  display: inline-flex; align-items: center; gap: 10px;
+  flex-shrink: 0; padding: 0 24px;
+  border-right: 1px solid var(--border-subtle);
+}
+.stat-chip:first-child { padding-left: 0; }
+.stat-chip:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700;
+  color: var(--accent-amber); letter-spacing: -0.03em;
+  line-height: 1;
+}
+.stat-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-soft); max-width: 120px; line-height: 1.3;
+}
+
+/* ─── EXEC SUMMARY ─────────────────────────────────────────── */
+.exec {
+  background: linear-gradient(90deg, rgba(255,184,105,0.08), rgba(255,184,105,0.03));
+  border-bottom: 1px solid var(--accent-line);
+}
+.exec-inner { max-width:1180px; margin:0 auto; padding:18px 20px 22px; }
+.exec-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-soft); margin-bottom:6px; }
+.exec-grid { display:grid; grid-template-columns:minmax(0,2.2fr) minmax(0,1.6fr); gap:26px; }
+@media (max-width:900px) { .exec-grid { grid-template-columns:1fr; } }
+.exec-main { font-size:0.98rem; color:var(--text-muted); }
+.exec-points { display:grid; gap:6px; }
+.exec-pill {
+  font-size:0.85rem; color:var(--text-soft); background:rgba(10,15,30,0.9);
+  border-radius:999px; padding:6px 12px; border:1px solid rgba(37,44,64,0.9);
+  display:inline-flex; align-items:center; gap:8px;
+}
+.exec-pill span { width:6px; height:6px; border-radius:999px; background:var(--accent-amber); }
+.exec-mandate { margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,184,105,0.35); }
+.exec-mandate-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-amber); margin-bottom:6px; }
+.exec-mandate p { font-size:0.95rem; color:var(--text-muted); }
+.exec-mandate strong { color:var(--text-main); }
+
+/* ─── TOC ─────────────────────────────────────────────────── */
+.toc { margin-top:40px; margin-bottom:32px; }
+.toc-inner { background:var(--bg-elevated); border-radius:18px; border:1px solid var(--border-subtle); padding:20px 22px 18px; box-shadow:var(--shadow-soft); }
+.toc-header { display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:12px; }
+.toc-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-soft); }
+.toc-meta { font-size:0.8rem; color:var(--text-soft); }
+.toc-list { list-style:none; display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:6px 18px; }
+.toc-list li a { font-family:'Space Grotesk',sans-serif; font-size:0.95rem; color:var(--text-muted); text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition: color 0.15s; }
+.toc-list li a::before { content:'▸'; font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--accent-amber); }
+.toc-list li a:hover, .toc-list li a:focus { color:var(--accent-amber); }
+
+/* ─── SECTION ─────────────────────────────────────────────── */
+.section { padding:60px 0 40px; border-top:1px solid var(--accent-line); }
+.section-header { display:grid; grid-template-columns:auto minmax(0,1fr); gap:18px; align-items:baseline; margin-bottom:26px; }
+.section-index { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-amber); }
+.section-title-wrap { display:flex; flex-direction:column; gap:4px; }
+.section-title { font-family:'Space Grotesk',sans-serif; font-size:clamp(1.6rem,3vw,2rem); font-weight:600; letter-spacing:-0.03em; }
+.section-title span { color:var(--accent-amber); }
+.section-kicker { font-size:0.9rem; color:var(--text-soft); }
+
+/* ─── WHY IT MATTERS ──────────────────────────────────────── */
+.why {
+  margin-bottom:24px; padding:14px 16px;
+  border-radius:14px;
+  background:linear-gradient(90deg,rgba(255,184,105,0.12),rgba(255,184,105,0.04));
+  border:1px solid rgba(255,184,105,0.35);
+}
+.why-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-amber); margin-bottom:6px; }
+.why p { font-size:0.95rem; color:var(--text-muted); }
+
+/* ─── GRIDS ───────────────────────────────────────────────── */
+.grid-2 { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1.4fr); gap:26px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+.grid-2-3 { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1.3fr); gap:30px; }
+@media (max-width:900px) { .grid-2,.grid-3,.grid-2-3 { grid-template-columns:1fr; } }
+
+/* ─── CARDS ───────────────────────────────────────────────── */
+.card {
+  background:var(--bg-elevated); border-radius:16px;
+  border:1px solid var(--border-subtle); padding:18px 18px 16px;
+  box-shadow:var(--shadow-soft);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 52px rgba(0,0,0,0.6), 0 0 24px rgba(255,184,105,0.07);
+  border-color: rgba(255,184,105,0.25);
+}
+.card-accent { border-top:3px solid var(--accent-amber); }
+.card h3 { font-family:'Space Grotesk',sans-serif; font-size:1.05rem; font-weight:600; margin-bottom:8px; }
+.card p { font-size:0.95rem; color:var(--text-muted); }
+
+/* ─── APPROACH CHIPS ──────────────────────────────────────── */
+.approach-chips { margin:18px 0 10px; display:grid; grid-template-columns:minmax(0,1fr); gap:8px; }
+.approach-chip {
+  display:flex; justify-content:space-between; align-items:baseline; gap:10px;
+  padding:8px 10px; border-radius:10px; background:var(--bg-soft); border:1px solid var(--border-subtle);
+  transition: border-color 0.18s, background 0.18s;
+}
+.approach-chip:hover { border-color:rgba(255,184,105,0.35); background:rgba(255,184,105,0.05); }
+.approach-chip-name { font-family:'DM Mono',monospace; font-size:0.8rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-main); }
+.approach-chip-use { font-size:0.9rem; color:var(--text-muted); }
+
+/* Open-source badge */
+.chip-badge {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.14em; text-transform:uppercase;
+  padding:2px 6px; border-radius:999px; margin-left:6px;
+  background:rgba(79,227,255,0.1); border:1px solid rgba(79,227,255,0.25); color:var(--accent-cyan);
+  vertical-align: middle;
+}
+
+/* ─── INSIGHT ─────────────────────────────────────────────── */
+.insight {
+  position:relative; margin-top:18px; padding:18px 18px 16px;
+  border-radius:16px;
+  background:radial-gradient(circle at top right,rgba(255,184,105,0.16),transparent 55%),var(--bg-elevated);
+  border:1px solid rgba(255,184,105,0.4);
+  box-shadow:0 10px 26px rgba(0,0,0,0.4); overflow:hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.insight:hover { transform: translateY(-3px); box-shadow: 0 18px 44px rgba(0,0,0,0.5); }
+.insight::before { content:'"'; position:absolute; right:12px; top:-18px; font-family:'Space Grotesk',sans-serif; font-size:80px; color:rgba(255,184,105,0.18); pointer-events:none; }
+.insight-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-amber); margin-bottom:6px; }
+.insight p { font-size:0.95rem; color:var(--text-muted); }
+
+/* ─── PULLQUOTE ───────────────────────────────────────────── */
+.pullquote {
+  margin:26px 0 22px; padding:18px 20px 16px;
+  border-radius:16px;
+  background:linear-gradient(90deg,rgba(255,184,105,0.16),rgba(255,184,105,0.08));
+  border:1px solid rgba(255,184,105,0.45);
+  border-left:4px solid var(--accent-amber);
+  box-shadow:0 10px 26px rgba(0,0,0,0.4);
+}
+.pullquote p { font-family:'Space Grotesk',sans-serif; font-size:1.1rem; font-weight:500; color:var(--accent-amber); margin-bottom:6px; }
+.pullquote cite { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-soft); }
+
+/* ─── CODE BLOCK ──────────────────────────────────────────── */
+pre {
+  font-family:'DM Mono',monospace; font-size:0.8rem;
+  background:#050711; color:#e3f7ff;
+  padding:14px 16px; border-radius:14px;
+  border:1px solid rgba(255,184,105,0.5);
+  box-shadow:0 0 14px rgba(255,184,105,0.25);
+  overflow-x:auto; margin:12px 0 14px;
+}
+
+/* ─── STEPS ───────────────────────────────────────────────── */
+.step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:12px; margin-bottom:16px; }
+.step-num { font-family:'Space Grotesk',sans-serif; font-size:1.6rem; font-weight:600; color:var(--accent-amber); }
+.step h4 { font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:600; margin-bottom:4px; }
+.step p { font-size:0.95rem; color:var(--text-muted); }
+
+/* ─── BODY LIST ───────────────────────────────────────────── */
+.body-list { list-style:none; margin:10px 0 4px; padding:0; }
+.body-list li { position:relative; padding-left:16px; margin-bottom:8px; font-size:0.95rem; color:var(--text-muted); }
+.body-list li::before { content:'–'; position:absolute; left:0; top:0; color:var(--accent-amber); }
+.body-list li strong { color:var(--text-main); }
+
+/* ─── FORMULA ─────────────────────────────────────────────── */
+.formula {
+  margin-top:18px; padding:20px 20px 18px;
+  border-radius:16px; background:var(--bg-soft); border:1px solid var(--border-subtle);
+  overflow:hidden; position:relative;
+}
+.formula::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--accent-magenta),transparent);
+}
+.formula::after {
+  content:''; position:absolute; top:0; right:0; bottom:0; width:3px;
+  background:linear-gradient(180deg,transparent,var(--accent-amber));
+}
+.formula-old { font-family:'DM Mono',monospace; font-size:0.82rem; color:var(--text-soft); text-decoration:line-through; text-decoration-color:var(--accent-magenta); }
+.formula-arrow {
+  font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--accent-amber);
+  letter-spacing:0.16em; text-transform:uppercase; margin:8px 0; display:flex; align-items:center; gap:8px;
+}
+.formula-arrow::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,184,105,0.3),transparent); }
+.formula-new { font-family:'Space Grotesk',sans-serif; font-size:1.08rem; font-weight:600; color:var(--text-main); }
+.formula-subtext { font-size:0.9rem; color:var(--text-soft); margin-top:10px; padding-top:10px; border-top:1px solid var(--border-subtle); }
+
+/* ─── RULE LABEL ──────────────────────────────────────────── */
+.rule-label {
+  margin:18px 0 10px; display:inline-flex; align-items:center; gap:8px;
+  padding:4px 10px; border-radius:999px;
+  border:1px solid rgba(255,79,163,0.6); background:rgba(255,79,163,0.08);
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent-magenta);
+}
+
+/* ─── DIAGNOSTIC ──────────────────────────────────────────── */
+.diagnostic {
+  background:var(--bg-elevated); border-radius:16px;
+  border:1px solid rgba(255,184,105,0.5); padding:18px 18px 14px;
+  box-shadow:var(--shadow-soft);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.diagnostic:hover { transform: translateY(-2px); box-shadow: 0 18px 44px rgba(0,0,0,0.5); }
+.diagnostic h3 { font-family:'Space Grotesk',sans-serif; font-size:1.05rem; margin-bottom:8px; }
+.diagnostic-list { list-style:none; padding:0; margin:6px 0 0; }
+.diagnostic-list li { padding:8px 0; border-bottom:1px solid var(--border-subtle); font-size:0.95rem; color:var(--text-muted); }
+.diagnostic-list li:last-child { border-bottom:none; }
+.diagnostic-q { font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent-amber); display:block; margin-bottom:2px; }
+
+/* ─── MATURITY ────────────────────────────────────────────── */
+.maturity { margin-top:10px; padding:16px 18px 14px; border-radius:16px; background:var(--bg-soft); border:1px solid var(--border-subtle); }
+.maturity-title { font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:600; margin-bottom:8px; }
+.maturity-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px; }
+.maturity-item { padding:10px 10px 8px; border-radius:12px; background:var(--bg-chip); border:1px solid var(--border-subtle); transition:border-color 0.18s; }
+.maturity-item:hover { border-color:rgba(79,227,255,0.3); }
+.maturity-level { font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent-cyan); margin-bottom:4px; }
+.maturity-item p { font-size:0.9rem; color:var(--text-muted); }
+.maturity-failure { font-size:0.85rem; color:var(--accent-magenta); margin-top:4px; }
+
+/* ─── PROTOCOL BOX ────────────────────────────────────────── */
+.protocol-box {
+  margin-top:18px; padding:18px 18px 14px;
+  border-radius:16px;
+  background:linear-gradient(135deg,rgba(79,227,255,0.06),rgba(79,227,255,0.02));
+  border:1px solid rgba(79,227,255,0.25);
+}
+.protocol-box-title { font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:600; color:var(--accent-cyan); margin-bottom:10px; }
+.protocol-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px; }
+.protocol-item { padding:8px 10px; border-radius:10px; background:rgba(79,227,255,0.05); border:1px solid rgba(79,227,255,0.15); }
+.protocol-name { font-family:'DM Mono',monospace; font-size:0.78rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent-cyan); margin-bottom:3px; }
+.protocol-item p { font-size:0.88rem; color:var(--text-muted); line-height:1.5; }
+
+/* ─── KEY SIGNAL ──────────────────────────────────────────── */
+.key-signal {
+  margin-top:20px; padding:16px 18px 14px;
+  border-radius:16px;
+  background:linear-gradient(90deg,rgba(255,184,105,0.1),rgba(255,184,105,0.03));
+  border:1px solid rgba(255,184,105,0.45);
+  display:flex; gap:16px; align-items:flex-start;
+}
+.key-signal-icon {
+  flex-shrink:0; width:32px; height:32px; border-radius:50%;
+  background:rgba(255,184,105,0.15); border:1px solid rgba(255,184,105,0.4);
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px;
+}
+.key-signal-body {}
+.key-signal-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-amber); margin-bottom:4px; }
+.key-signal-text { font-size:0.93rem; color:var(--text-muted); }
+.key-signal-text strong { color:var(--text-main); }
+
+/* ─── PRINCIPLES ──────────────────────────────────────────── */
+.principles {
+  margin-top:18px; padding:22px 22px 18px;
+  border-radius:16px;
+  background:radial-gradient(circle at top,rgba(255,184,105,0.16),transparent 60%),var(--bg-elevated);
+  border:1px solid rgba(255,184,105,0.5);
+}
+.principles-title { font-family:'Space Grotesk',sans-serif; font-size:1.05rem; font-weight:600; margin-bottom:12px; }
+.principles-list { list-style:none; padding:0; margin:4px 0 0; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:0 30px; }
+.principles-list li { font-size:0.95rem; color:var(--text-muted); margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,184,105,0.1); }
+.principles-list li:last-child { border-bottom:none; }
+.principles-list li strong { color:var(--accent-amber); }
+
+/* ─── MEMORY ──────────────────────────────────────────────── */
+.memory-card { margin-top:18px; padding:16px 18px 14px; border-radius:16px; background:var(--bg-elevated); border:1px solid var(--border-subtle); }
+.memory-title { font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:600; margin-bottom:8px; }
+.memory-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px; }
+.memory-item { padding:10px 10px 8px; border-radius:12px; background:var(--bg-soft); border:1px solid var(--border-subtle); transition:border-color 0.18s; }
+.memory-item:hover { border-color:rgba(79,227,255,0.3); }
+.memory-label { font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent-cyan); margin-bottom:4px; }
+.memory-item p { font-size:0.9rem; color:var(--text-muted); }
+
+/* ─── CLOSING ─────────────────────────────────────────────── */
+.closing {
+  margin-top:40px; padding:50px 20px 0;
+  border-top:1px solid var(--accent-line);
+  background:radial-gradient(circle at bottom,rgba(255,184,105,0.18),transparent 55%),#050711;
+}
+.closing-inner { max-width:900px; margin:0 auto; text-align:center; }
+.closing h2 {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(1.7rem,3.2vw,2.2rem);
+  font-weight:500; letter-spacing:-0.03em; margin-bottom:14px;
+}
+.closing h2 span { color:var(--accent-amber); }
+.closing-tagline { font-family:'DM Mono',monospace; font-size:0.8rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-soft); margin-top:18px; }
+
+/* Closing divider */
+.closing-divider {
+  margin:32px auto; max-width:320px; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,184,105,0.4),transparent);
+}
+.closing-footer-row {
+  display:flex; justify-content:center; align-items:center; gap:28px;
+  padding:20px 0 40px; flex-wrap:wrap;
+}
+.closing-footer-item { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-soft); }
+.closing-footer-sep { width:4px; height:4px; border-radius:999px; background:rgba(255,184,105,0.4); }
+.closing-next {
+  margin:0 auto 0; padding:18px 22px;
+  max-width:620px;
+  border-radius:16px;
+  background:rgba(21,27,48,0.7); border:1px solid var(--border-subtle);
+}
+.closing-next-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-amber); margin-bottom:6px; }
+.closing-next p { font-size:0.9rem; color:var(--text-muted); }
+
+/* ─── STATS DISCLAIMER ────────────────────────────────────── */
+.stats-disclaimer {
+  max-width:1180px; margin:0 auto;
+  padding:4px 20px 8px;
+  font-family:'DM Mono',monospace; font-size:9px;
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:rgba(143,153,173,0.5);
+}
+
+/* ─── FIELD NOTE ──────────────────────────────────────────── */
+.field-note {
+  margin-top:18px; padding:16px 18px 14px;
+  border-radius:14px;
+  background:rgba(255,79,163,0.05);
+  border:1px solid rgba(255,79,163,0.25);
+  border-left:3px solid var(--accent-magenta);
+}
+.field-note-label {
+  font-family:'DM Mono',monospace; font-size:9px;
+  letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--accent-magenta); margin-bottom:6px;
+}
+.field-note p { font-size:0.9rem; color:var(--text-muted); line-height:1.6; }
+.field-note p + p { margin-top:8px; }
+
+/* ─── EMERGING ROLES ──────────────────────────────────────── */
+.roles-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:10px; margin-top:12px;
+}
+.role-item {
+  padding:12px 12px 10px; border-radius:12px;
+  background:var(--bg-chip); border:1px solid var(--border-subtle);
+  transition:border-color 0.18s;
+}
+.role-item:hover { border-color:rgba(255,184,105,0.3); }
+.role-name {
+  font-family:'Space Grotesk',sans-serif; font-size:0.9rem;
+  font-weight:600; color:var(--text-main); margin-bottom:4px;
+}
+.role-tag {
+  font-family:'DM Mono',monospace; font-size:8.5px;
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--accent-amber); margin-bottom:6px;
+}
+.role-item p { font-size:0.88rem; color:var(--text-muted); line-height:1.5; }
+
+/* ─── FURTHER READING ─────────────────────────────────────── */
+.further-reading {
+  padding:40px 0 20px; border-top:1px solid var(--accent-line);
+}
+.further-reading-title {
+  font-family:'DM Mono',monospace; font-size:10px;
+  letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--text-soft); margin-bottom:14px;
+}
+.reading-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:10px;
+}
+.reading-item {
+  padding:12px 14px 10px; border-radius:12px;
+  background:var(--bg-elevated); border:1px solid var(--border-subtle);
+  text-decoration:none; display:block;
+  transition:border-color 0.18s, transform 0.18s;
+}
+.reading-item:hover { border-color:rgba(255,184,105,0.3); transform:translateY(-2px); }
+.reading-source {
+  font-family:'DM Mono',monospace; font-size:9px;
+  letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--accent-amber); margin-bottom:4px;
+}
+.reading-title { font-size:0.9rem; color:var(--text-main); font-weight:500; margin-bottom:3px; }
+.reading-desc { font-size:0.83rem; color:var(--text-soft); line-height:1.5; }
+
+/* ─── SCORER ──────────────────────────────────────────────── */
+.scorer {
+  margin-top:12px; padding:14px 16px 12px;
+  border-radius:12px; background:var(--bg-soft);
+  border:1px solid var(--border-subtle);
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  flex-wrap:wrap;
+}
+.scorer-checks { display:flex; gap:8px; flex-wrap:wrap; }
+.scorer-check {
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:'DM Mono',monospace; font-size:10px;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-soft); cursor:pointer; user-select:none;
+}
+.scorer-check input[type=checkbox] { accent-color:var(--accent-amber); width:13px; height:13px; cursor:pointer; }
+.scorer-check input:checked + span { color:var(--accent-amber); }
+.scorer-result {
+  font-family:'DM Mono',monospace; font-size:11px;
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--text-soft); white-space:nowrap;
+}
+.scorer-result strong { color:var(--accent-amber); }
+
+/* ─── MOBILE TWEAKS ───────────────────────────────────────── */
+@media (max-width:600px) {
+  .exec-inner { padding-top:14px; }
+  .stats-strip-inner { gap:0; }
+  .stat-chip { padding:0 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP PROGRESS BAR -->
+<div id="topProgressBar"></div>
+
+<!-- FLOATING COMMAND CENTER -->
+<nav class="command-center" aria-label="Section navigation">
+  <div class="command-center-inner">
+    <div class="command-progress-track">
+      <div class="command-progress-fill" id="commandProgress"></div>
+    </div>
+    <div class="command-nav">
+      <div class="command-nav-title">Sections</div>
+      <ul class="command-nav-list">
+        <li><a href="#tools" data-section="tools">Tool strategy</a></li>
+        <li><a href="#human" data-section="human">Human factor</a></li>
+        <li><a href="#architecture" data-section="architecture">Architecture</a></li>
+        <li><a href="#agents" data-section="agents">Agentic playbook</a></li>
+        <li><a href="#production" data-section="production">Production</a></li>
+        <li><a href="#scarce" data-section="scarce">What stays human</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu-button">
+  <button type="button" id="mobileMenuToggle"><span class="dot"></span> Menu</button>
+</div>
+<div class="mobile-menu-overlay" id="mobileMenuOverlay">
+  <div class="mobile-menu-panel">
+    <div class="mobile-menu-header">
+      <div class="mobile-menu-title">Navigate</div>
+      <div class="mobile-menu-close" id="mobileMenuClose">Close</div>
+    </div>
+    <ul class="mobile-menu-list">
+      <li><a href="#tools">Tool selection &amp; strategy</a></li>
+      <li><a href="#human">The human factor</a></li>
+      <li><a href="#architecture">Architecture &amp; protocols</a></li>
+      <li><a href="#agents">The agentic playbook</a></li>
+      <li><a href="#production">Production realities</a></li>
+      <li><a href="#scarce">What stays human</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-meta">Strategic Intelligence Briefing · March 2026</div>
+      <h1 class="hero-title">The AI <span>Brief</span></h1>
+      <p class="hero-tagline">
+        How architecture, judgment, and governance separate signal from noise in the age of abundant intelligence.
+      </p>
+      <p class="hero-subtitle">Architecture · Judgment · Production · Governance · Dark Mode Edition</p>
+      <p class="hero-author">A Practitioner Perspectives · Vol. 1</p>
+      <div class="hero-chip">
+        <span></span>
+        <span>Field Notes from 2026 AI Systems in Production</span>
+      </div>
+      <div class="hero-reading-time">~18 min read · 6 sections</div>
+    </div>
+    <aside class="hero-panel">
+      <div class="hero-panel-inner">
+        <div class="hero-panel-label">Executive framing</div>
+        <p class="hero-panel-text">
+          Every organization now has access to roughly the same frontier models and agent frameworks. The real gap is no longer capability — it is discipline: matching the right architecture to the right problem, preserving human judgment, and building systems that remain understandable and accountable long after launch.
+        </p>
+        <p class="hero-panel-highlight">This brief is about that discipline.</p>
+      </div>
+    </aside>
+  </div>
+</header>
+
+<!-- STATS STRIP -->
+<div class="stats-strip" aria-label="Key 2026 statistics">
+  <div class="stats-strip-inner">
+    <div class="stat-chip">
+      <div class="stat-num">73%</div>
+      <div class="stat-label">of AI failures are system failures, not model failures</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-num">12%</div>
+      <div class="stat-label">of orgs have formalized constitutional memory for agents</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-num">4.2×</div>
+      <div class="stat-label">ROI advantage for governed agentic systems vs. ungoverned</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-num">68%</div>
+      <div class="stat-label">of teams still rely on single-model stacks with no fallback</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-num">&lt;30%</div>
+      <div class="stat-label">of deployed agents have explicit escalation rules to humans</div>
+    </div>
+  </div>
+  <div class="stats-disclaimer">Practitioner synthesis from 2025–early 2026 production deployments. Directional, not audited survey data.</div>
+</div>
+
+<!-- EXEC SUMMARY -->
+<section class="exec">
+  <div class="exec-inner">
+    <div class="exec-label">Executive summary</div>
+    <div class="exec-grid">
+      <div class="exec-main">
+        The next decade will not be won by whoever deploys the most agents or spends the most on tokens. It will be won by organizations that:
+        <br><br>
+        • Treat models as interchangeable components inside well-governed systems.<br>
+        • Protect human judgment from erosion by speed and automation.<br>
+        • Design architectures where failure, recovery, and oversight are first-class features.
+        <div class="exec-mandate">
+          <div class="exec-mandate-title">Strategic mandate · Q1 2026</div>
+          <p>
+            <strong>Immediate action:</strong> Shift from evaluating individual models to auditing agentic hand-offs — every place where responsibility moves between agents, tools, and humans.<br><br>
+            <strong>North Star metric:</strong> Track <em>Decision Latency</em> — the time it takes for your agentic system to resolve a complex, multi-step task without human intervention, while still meeting quality and risk thresholds. If latency is shrinking and post-hoc corrections are not spiking, you are moving in the right direction.
+          </p>
+        </div>
+      </div>
+      <div class="exec-points">
+        <div class="exec-pill"><span></span> Strategy: Tool selection follows risk, not hype.</div>
+        <div class="exec-pill"><span></span> Judgment: Depth over volume in an abundant world.</div>
+        <div class="exec-pill"><span></span> Architecture: Compound, protocol-driven systems win.</div>
+        <div class="exec-pill"><span></span> Production: Governance and observability are the real moat.</div>
+        <div class="exec-pill"><span></span> Scarcity: Direction and discernment remain irreducibly human.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="page">
+
+  <!-- TOC -->
+  <nav class="toc" data-reveal>
+    <div class="toc-inner">
+      <div class="toc-header">
+        <div class="toc-title">In this briefing</div>
+        <div class="toc-meta">A field guide for leaders deploying AI systems at scale.</div>
+      </div>
+      <ul class="toc-list">
+        <li><a href="#tools">Tool selection &amp; strategy</a></li>
+        <li><a href="#human">The human factor</a></li>
+        <li><a href="#architecture">Architecture &amp; protocols</a></li>
+        <li><a href="#agents">The agentic playbook</a></li>
+        <li><a href="#production">Production realities</a></li>
+        <li><a href="#scarce">What stays human</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── SECTION 1: TOOLS ──────────────────────────────────── -->
+  <section class="section" id="tools">
+    <header class="section-header" data-reveal>
+      <div class="section-index">01 · Strategy</div>
+      <div class="section-title-wrap">
+        <h2 class="section-title">The right tool for <span>the right problem</span></h2>
+        <p class="section-kicker">Why "Which model?" is the wrong first question.</p>
+      </div>
+    </header>
+
+    <div class="why" data-reveal data-delay="1">
+      <div class="why-label">Why this matters</div>
+      <p>
+        The most expensive AI mistake in 2026 is not underusing models — it is misusing them. Treating all platforms as interchangeable, or standardizing too early on a single vendor, quietly erodes performance, trust, and optionality.
+      </p>
+    </div>
+
+    <div class="grid-2-3" data-reveal data-delay="2">
+      <div>
+        <p>
+          The sharpest teams no longer ask, "Which AI should we use?" They ask, "For this specific decision or workflow, which combination of model, context strategy, and protocols gives us reliable, auditable outcomes?"
+        </p>
+        <p>
+          Platform and protocol selection now follow task logic and business risk, not marketing decks. Each major approach has a distinct strength profile; misalignment doesn't just waste tokens — it creates invisible technical debt that shows up months later as drift, rework, and brittle systems.
+        </p>
+
+        <div class="approach-chips">
+          <div class="approach-chip">
+            <div class="approach-chip-name">ChatGPT / GPT models</div>
+            <div class="approach-chip-use">Writing, drafting, synthesis, idea distillation.</div>
+          </div>
+          <div class="approach-chip">
+            <div class="approach-chip-name">Claude + MCP</div>
+            <div class="approach-chip-use">Complex reasoning with rich context and structured tools.</div>
+          </div>
+          <div class="approach-chip">
+            <div class="approach-chip-name">Grok</div>
+            <div class="approach-chip-use">Trend signals, real-time social and cultural intelligence.</div>
+          </div>
+          <div class="approach-chip">
+            <div class="approach-chip-name">Gemini</div>
+            <div class="approach-chip-use">Enterprise document workflows across Sheets, Slides, Gmail.</div>
+          </div>
+          <div class="approach-chip">
+            <div class="approach-chip-name">Specialized agents</div>
+            <div class="approach-chip-use">Multi-step workflows with tool use and orchestration.</div>
+          </div>
+          <div class="approach-chip">
+            <div class="approach-chip-name">Open-source / Self-hosted <span class="chip-badge">New</span></div>
+            <div class="approach-chip-use">Llama, Mistral, Qwen — air-gapped, cost-sovereign, regulated contexts.</div>
+          </div>
+        </div>
+
+        <p>
+          The organizations that pull ahead are not the ones that "pick a winner" — they are the ones that treat models as interchangeable components inside a well-designed system, with clear boundaries, fallbacks, and governance. Open-source and self-hosted options are maturing rapidly; in regulated industries or cost-sensitive contexts, they now represent a credible first-tier choice rather than a fallback.
+        </p>
+      </div>
+
+      <aside>
+        <div class="insight">
+          <div class="insight-label">The foundation-first principle</div>
+          <p>
+            Default to mature foundation models and open patterns (MCP, FCP, ReAct) unless you have a clear economic, regulatory, or quality reason to build custom infrastructure. "Too expensive," "we need more control," and "safety concerns" often mask avoidance of harder work: clean data, clear processes, and accountable governance.
+          </p>
+          <ul class="body-list" style="margin-top:10px;">
+            <li><strong>"Too expensive"</strong> → months of duplicated effort and hidden maintenance.</li>
+            <li><strong>"Build our own stack"</strong> → endless technical debt and talent drain.</li>
+            <li><strong>"Self-host everything for safety"</strong> → leadership focused on infrastructure, not outcomes.</li>
+          </ul>
+        </div>
+
+        <div class="diagnostic" style="margin-top:14px;">
+          <h3>Self-assessment · Tool strategy</h3>
+          <ul class="diagnostic-list">
+            <li>
+              <span class="diagnostic-q">Q1</span>
+              Can we explain, in one slide, why each major model or platform we use is matched to a specific class of problems?
+            </li>
+            <li>
+              <span class="diagnostic-q">Q2</span>
+              If our primary model vendor changed pricing or quality tomorrow, could we switch without rewriting our entire stack?
+            </li>
+            <li>
+              <span class="diagnostic-q">Q3</span>
+              Do we have at least one place where two different models are evaluated side-by-side on the same workflow?
+            </li>
+          </ul>
+          <div class="scorer" data-scorer="tools">
+            <div class="scorer-checks">
+              <label class="scorer-check"><input type="checkbox" data-s="tools"> <span>Q1 Yes</span></label>
+              <label class="scorer-check"><input type="checkbox" data-s="tools"> <span>Q2 Yes</span></label>
+              <label class="scorer-check"><input type="checkbox" data-s="tools"> <span>Q3 Yes</span></label>
+            </div>
+            <div class="scorer-result" id="score-tools">Score: <strong>0 / 3</strong></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="key-signal" data-reveal>
+      <div class="key-signal-icon">⚡</div>
+      <div class="key-signal-body">
+        <div class="key-signal-label">Key signal · Section 01</div>
+        <p class="key-signal-text">
+          The competitive advantage in 2026 is not <strong>which model you use</strong> — it is <strong>how clearly you can justify each choice</strong> against a specific problem, risk level, and fallback strategy. Vendor diversity is a moat. Lock-in is a liability.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: HUMAN ──────────────────────────────────── -->
+  <section class="section" id="human">
+    <header class="section-header" data-reveal>
+      <div class="section-index">02 · Judgment</div>
+      <div class="section-title-wrap">
+        <h2 class="section-title">The human factor: <span>what AI quietly erodes</span></h2>
+        <p class="section-kicker">Speed without comprehension is just faster fragility.</p>
+      </div>
+    </header>
+
+    <div class="why" data-reveal data-delay="1">
+      <div class="why-label">Why this matters</div>
+      <p>
+        AI can now produce plausible code, documents, and decisions at industrial speed. The risk is not replacement — it is erosion: of understanding, of ownership, and of the ability to intervene when things go wrong.
+      </p>
+    </div>
+
+    <div class="pullquote" data-reveal data-delay="2">
+      <p>
+        AI won't replace engineers or domain experts. It will expose those who stopped deeply understanding the systems they are responsible for.
+      </p>
+      <cite>Practitioner observation, March 2026</cite>
+    </div>
+
+    <div class="grid-2" data-reveal data-delay="2">
+      <div>
+        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.05rem; margin-bottom:8px;">Dark code &amp; dark decisions</h3>
+        <p>
+          A growing category of software — and increasingly, business decisions — now "works," passes tests, or looks plausible, yet is produced without real understanding. Call it Dark Code or Dark Decisions: functional on the surface, but uninterpretable and fragile when conditions change.
+        </p>
+        <p>The loop looks like this:</p>
+        <pre>paste vague requirement or error → AI suggests fix or answer → apply quickly → repeat</pre>
+        <p>
+          The output compiles or sounds reasonable. Human comprehension does not grow. Authorship collapses into operation — setting the stage for incidents no one is equipped to diagnose or repair.
+        </p>
+
+        <h4 style="font-family:'Space Grotesk',sans-serif; font-size:0.98rem; margin:16px 0 8px;">Three practices that preserve clarity</h4>
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h4>Document the "why" before any generation</h4>
+            <p>What problem are we solving? Why does this decision or code need to exist? Clarity of intent must precede automation; otherwise, AI simply accelerates confusion.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h4>Build self-describing, auditable systems</h4>
+            <p>Intent, assumptions, and decision criteria should live in the architecture, schemas, and logs — not just in someone's head or an opaque agent trace.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h4>Require comprehension before shipping or acting</h4>
+            <p>If the responsible person cannot clearly explain the reasoning and trade-offs, the change does not go live. "It passed the tests" is not a substitute for ownership.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.05rem; margin-bottom:8px;">The entropy paradox</h3>
+        <p>
+          AI-assisted work carries a quiet paradox: the faster we can generate output, the easier it becomes to stop thinking deeply. More volume, less originality. More efficiency, less genuine insight.
+        </p>
+        <p>
+          The problem is not AI itself. It is the disappearance of healthy friction — the resistance that forces creative thinking, careful judgment, and real ownership.
+        </p>
+
+        <div class="card card-accent" style="margin-top:14px;">
+          <h3>Protecting depth in an abundant world</h3>
+          <ul class="body-list">
+            <li><strong>Use AI as a challenger, not just a drafter.</strong> Ask it to find contradictions, surface assumptions, and stress-test ideas. If it agrees too easily, your prompt hasn't gone deep enough.</li>
+            <li><strong>Apply the 70/30 rule.</strong> Let AI handle routine execution and pattern matching. Reserve the final 30% — nuanced judgment, lived context, and accountability — for humans.</li>
+            <li><strong>Protect high-attention hours.</strong> The most important strategic thinking should not be outsourced. Use AI for implementation, not for deciding what is worth doing.</li>
+            <li><strong>Read what AI cannot fully interpret.</strong> Models see statistical patterns. Only humans can sense what those patterns truly mean for people, ethics, and long-term consequences.</li>
+          </ul>
+        </div>
+
+        <div class="formula">
+          <div class="formula-old">Skill × Hours Worked = Value Created</div>
+          <div class="formula-arrow">is being replaced by ──────</div>
+          <div class="formula-new">Judgment × Intelligent Systems = Lasting Value</div>
+          <p class="formula-subtext">
+            The critical shift: from "Can you produce this output?" to "Do you know which outcomes are truly worth pursuing — and why?"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight" style="margin-top:16px;" data-reveal>
+      <div class="insight-label">Work slop warning</div>
+      <p>
+        The same systems that compress hours of work into minutes also empower careless execution to flood teams with polished but strategically empty material. Volume is no longer proof of effort or quality. Verifiable outcomes, clear reasoning, and human accountability are.
+      </p>
+    </div>
+
+    <div class="key-signal" data-reveal>
+      <div class="key-signal-icon">🧠</div>
+      <div class="key-signal-body">
+        <div class="key-signal-label">Key signal · Section 02</div>
+        <p class="key-signal-text">
+          Comprehension is the new compliance. Organizations that <strong>require humans to understand before they ship</strong> will outperform those that optimize for output volume alone. Audit for understanding, not just outcomes.
+        </p>
+      </div>
+    </div>
+
+    <div class="diagnostic" style="margin-top:14px;" data-reveal>
+      <h3>Self-assessment · Human judgment</h3>
+      <ul class="diagnostic-list">
+        <li>
+          <span class="diagnostic-q">Q1</span>
+          In our critical workflows, can we name the person accountable for understanding how the system actually works — not just operating it?
+        </li>
+        <li>
+          <span class="diagnostic-q">Q2</span>
+          Do we have any area where AI-generated output is shipped without a human being able to explain the reasoning behind it?
+        </li>
+        <li>
+          <span class="diagnostic-q">Q3</span>
+          Have we explicitly defined which decisions must always involve human review, regardless of how confident the system appears?
+        </li>
+      </ul>
+      <div class="scorer" data-scorer="human">
+        <div class="scorer-checks">
+          <label class="scorer-check"><input type="checkbox" data-s="human"> <span>Q1 Yes</span></label>
+          <label class="scorer-check"><input type="checkbox" data-s="human"> <span>Q2 Yes (no dark shipping)</span></label>
+          <label class="scorer-check"><input type="checkbox" data-s="human"> <span>Q3 Yes</span></label>
+        </div>
+        <div class="scorer-result" id="score-human">Score: <strong>0 / 3</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3: ARCHITECTURE ───────────────────────────── -->
+  <section class="section" id="architecture">
+    <header class="section-header" data-reveal>
+      <div class="section-index">03 · Architecture</div>
+      <div class="section-title-wrap">
+        <h2 class="section-title">From monoliths to <span>compound, protocol-driven systems</span></h2>
+        <p class="section-kicker">The real frontier is coordination, not raw intelligence.</p>
+      </div>
+    </header>
+
+    <div class="why" data-reveal data-delay="1">
+      <div class="why-label">Why this matters</div>
+      <p>
+        Brute-force scaling of ever-larger models is hitting diminishing returns. The advantage now lies in how you orchestrate multiple components — models, tools, data, and governance — into systems that are reliable, observable, and adaptable.
+      </p>
+    </div>
+
+    <p style="margin-bottom:18px;" data-reveal data-delay="2">
+      In 2026, the most effective AI systems are compound: ensembles of specialized components coordinated by clear protocols and reasoning engines. Intelligence is becoming abundant; reliable coordination and governance are not.
+    </p>
+
+    <div class="grid-3" data-reveal data-delay="2">
+      <div class="card">
+        <h3>Why monolithic approaches struggle</h3>
+        <p>
+          A single massive model trying to be expert at everything is economically fragile and strategically brittle. When it fails or hallucinates, there is often nothing reliable to catch, contextualize, or correct it — and no clear way to know when it drifted.
+        </p>
+      </div>
+      <div class="card">
+        <h3>The 2026 pattern</h3>
+        <p>
+          Effective systems pair a strong reasoning engine with specialized retrievers, verifiers, tool executors, and governance gates. The moat is no longer the base model — it is the proprietary graph of data, relationships, and institutional knowledge that no public API can replicate.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Quality per outcome beats throughput</h3>
+        <p>
+          Use cheap, fast inference for routine tasks. Reserve deeper reasoning and human review for cases where stakes or uncertainty justify it. Organizations that master this trade-off consistently outperform those chasing maximum speed or volume.
+        </p>
+      </div>
+    </div>
+
+    <div class="maturity" data-reveal>
+      <div class="maturity-title">AI System Maturity Model · 2026</div>
+      <div class="maturity-grid">
+        <div class="maturity-item">
+          <div class="maturity-level">Ad hoc</div>
+          <p>Isolated experiments, no shared patterns, no governance. Value is anecdotal and fragile.</p>
+          <p class="maturity-failure">Failure mode: "Shadow agents" appear everywhere with no visibility or standards.</p>
+        </div>
+        <div class="maturity-item">
+          <div class="maturity-level">Assisted</div>
+          <p>Individuals use models for drafting and coding. Productivity gains, but no systemic leverage.</p>
+          <p class="maturity-failure">Failure mode: Local wins, global confusion; no one knows what "good" looks like.</p>
+        </div>
+        <div class="maturity-item">
+          <div class="maturity-level">Orchestrated</div>
+          <p>Shared tools, prompts, and workflows. Early agents, some observability, uneven governance.</p>
+          <p class="maturity-failure">Failure mode: Dashboards look healthy while downstream errors quietly accumulate.</p>
+        </div>
+        <div class="maturity-item">
+          <div class="maturity-level">Compound</div>
+          <p>Multiple models, tools, and policies coordinated via protocols. Clear ownership and metrics.</p>
+          <p class="maturity-failure">Failure mode: Protocols are implicit; changes in one part break others unexpectedly.</p>
+        </div>
+        <div class="maturity-item">
+          <div class="maturity-level">Governed</div>
+          <p>End-to-end oversight, auditable decisions, robust failure handling, and strategic alignment.</p>
+          <p class="maturity-failure">Failure mode: Governance becomes static; policies lag behind real-world usage.</p>
+        </div>
+      </div>
+      <div style="margin-top:12px; padding:10px 12px; border-radius:10px; background:rgba(79,227,255,0.05); border:1px solid rgba(79,227,255,0.15);">
+        <span style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent-cyan);">Across all levels, look for: </span>
+        <span style="font-size:0.88rem; color:var(--text-muted);">Evaluation loops (are outputs measured against real outcomes?), FinOps visibility (do you know what each agent run costs?), and feedback cycles (do failures produce system changes, not just incident tickets?). These dimensions often lag a full maturity level behind the core deployment.</span>
+      </div>
+    </div>
+
+    <!-- PROTOCOL GLOSSARY — refined for accuracy -->
+    <div class="protocol-box" data-reveal>
+      <div class="protocol-box-title">Protocol reference · The stack explained</div>
+      <p style="font-size:0.88rem; color:var(--text-soft); margin-bottom:12px; font-family:'DM Mono',monospace; letter-spacing:0.08em;">The agentic protocol ecosystem is still consolidating — efforts like the Linux Foundation's Agentic AI Foundation aim to unify interoperability standards. The two most adopted today are MCP and A2A; the rest are emerging or framework-specific.</p>
+      <div class="protocol-grid">
+        <div class="protocol-item">
+          <div class="protocol-name">MCP · Model Context Protocol <span style="font-size:8px;color:var(--accent-amber);letter-spacing:0.1em;">WIDELY ADOPTED</span></div>
+          <p>Anthropic's open standard (now broadly supported) for standardized agent tool access and context injection — documents, APIs, memory — across sessions and model providers. The closest thing to a universal agent I/O standard.</p>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-name">A2A · Agent-to-Agent <span style="font-size:8px;color:var(--accent-amber);letter-spacing:0.1em;">EMERGING STANDARD</span></div>
+          <p>Google-led open protocol for structured coordination between agents — task delegation, state handoff, and capability discovery. Gaining adoption alongside MCP as the paired standard for multi-agent orchestration.</p>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-name">ReAct · Reason + Act <span style="font-size:8px;color:var(--accent-cyan);letter-spacing:0.1em;">PATTERN</span></div>
+          <p>Foundational reasoning-action interleaving pattern that makes agent decision traces readable and correctable. The basis for most chain-of-thought + tool-use architectures in production today.</p>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-name">ACP · Agent Communication Protocol <span style="font-size:8px;color:var(--accent-cyan);letter-spacing:0.1em;">FRAMEWORK-SPECIFIC</span></div>
+          <p>IBM-originated structured messaging protocol for agent-to-agent communication, including capability negotiation and task framing. Adoption is growing in enterprise contexts but not yet universal.</p>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-name">Function Calling / Tool Use <span style="font-size:8px;color:var(--accent-cyan);letter-spacing:0.1em;">UNIVERSAL PATTERN</span></div>
+          <p>The schema-validated mechanism (implemented differently by each provider) that lets agents invoke external tools safely. MCP is increasingly becoming the normalization layer above this.</p>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-name">AGP / Governance Protocols <span style="font-size:8px;color:var(--text-soft);letter-spacing:0.1em;">ASPIRATIONAL</span></div>
+          <p>Organizational-layer concepts — red lines, escalation thresholds, constitutional constraints — not yet formalized as open standards. Most teams implement these as internal policy layers embedded in system prompts and routing logic.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="memory-card" data-reveal>
+      <div class="memory-title">The architecture of shared memory</div>
+      <div class="memory-grid">
+        <div class="memory-item">
+          <div class="memory-label">Short-term context</div>
+          <p>What the system can "see" in the current session: prompts, retrieved documents, recent tool calls. Optimized for speed, not permanence.</p>
+        </div>
+        <div class="memory-item">
+          <div class="memory-label">Episodic memory</div>
+          <p>Records of previous runs, incidents, and project outcomes. Used to refine prompts, policies, and routing over time.</p>
+        </div>
+        <div class="memory-item">
+          <div class="memory-label">Constitutional memory</div>
+          <p>Fixed organizational values, constraints, and non-negotiables. The rules that agents must consult before finalizing high-stakes decisions.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight" style="margin-top:18px;" data-reveal>
+      <div class="insight-label">The protocol gap</div>
+      <p>
+        The next major bottleneck is not model capability but protocol clarity. Agent-to-agent (A2A) communication is still largely bespoke: each team invents its own way for agents to hand off tasks, state, and responsibility. Until A2A protocols are standardized — or at least made explicit — organizations will keep rediscovering the same failure modes in coordination, escalation, and ownership.
+      </p>
+    </div>
+
+    <div class="key-signal" data-reveal>
+      <div class="key-signal-icon">🏗</div>
+      <div class="key-signal-body">
+        <div class="key-signal-label">Key signal · Section 03</div>
+        <p class="key-signal-text">
+          The organizations advancing fastest in 2026 are not investing in larger models — they are investing in <strong>protocol clarity and constitutional memory</strong>. If your agents don't share a documented handoff standard, you don't have a system. You have a collection of experiments.
+        </p>
+      </div>
+    </div>
+
+    <div class="diagnostic" style="margin-top:14px;" data-reveal>
+      <h3>Self-assessment · Architecture of agency</h3>
+      <ul class="diagnostic-list">
+        <li>
+          <span class="diagnostic-q">Q1</span>
+          Can we point to a single place where our "constitutional memory" — values and constraints — is encoded and enforced across agents?
+        </li>
+        <li>
+          <span class="diagnostic-q">Q2</span>
+          Do our agents share episodic memory of past failures and successes, or do they repeat the same mistakes in each new run?
+        </li>
+        <li>
+          <span class="diagnostic-q">Q3</span>
+          If two agents need to coordinate on a task, is there a documented protocol for how they hand off work and state?
+        </li>
+      </ul>
+      <div class="scorer" data-scorer="arch">
+        <div class="scorer-checks">
+          <label class="scorer-check"><input type="checkbox" data-s="arch"> <span>Q1 Yes</span></label>
+          <label class="scorer-check"><input type="checkbox" data-s="arch"> <span>Q2 Yes</span></label>
+          <label class="scorer-check"><input type="checkbox" data-s="arch"> <span>Q3 Yes</span></label>
+        </div>
+        <div class="scorer-result" id="score-arch">Score: <strong>0 / 3</strong></div>
+      </div>
+    </div>
+
+    <div class="pullquote" style="margin-top:22px;" data-reveal>
+      <p>
+        The most valuable asset in the coming economy will not be the largest model. It will be the most reliable, auditable, and domain-grounded system of coordinated intelligence.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4: AGENTS ─────────────────────────────────── -->
+  <section class="section" id="agents">
+    <header class="section-header" data-reveal>
+      <div class="section-index">04 · Production</div>
+      <div class="section-title-wrap">
+        <h2 class="section-title">The 2026 agentic <span>playbook</span></h2>
+        <p class="section-kicker">From prompt whispering to system design.</p>
+      </div>
+    </header>
+
+    <div class="why" data-reveal data-delay="1">
+      <div class="why-label">Why this matters</div>
+      <p>
+        An agent is not a chatbot with extra steps. In production, agents are systems: reasoning engines, context strategies, tools, protocols, and governance — all wired together. The skill has shifted from "what do I prompt?" to "what outcomes and boundaries do I encode?"
+      </p>
+    </div>
+
+    <p style="margin-bottom:10px;" data-reveal data-delay="2">At its core:</p>
+    <pre data-reveal data-delay="2">Agent = Reasoning Engine + Structured Context (MCP) + Safe Tool Use (FCP) + Coordination Protocols (ACP/A2A) + Governance (AGP) + Supervision</pre>
+
+    <!-- AGENT LOOP DIAGRAM -->
+    <div data-reveal style="margin:20px 0; overflow:hidden; border-radius:16px; border:1px solid var(--border-subtle); background:var(--bg-elevated);">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-soft); padding:12px 16px 0;">The production agent loop</div>
+      <svg viewBox="0 0 860 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;padding:8px 16px 14px;">
+        <defs>
+          <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <polygon points="0 0, 7 3.5, 0 7" fill="#ffb869" opacity="0.7"/>
+          </marker>
+          <marker id="arr-red" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <polygon points="0 0, 7 3.5, 0 7" fill="#ff4fa3" opacity="0.7"/>
+          </marker>
+          <marker id="arr-cyan" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <polygon points="0 0, 7 3.5, 0 7" fill="#4fe3ff" opacity="0.7"/>
+          </marker>
+        </defs>
+        <!-- Nodes -->
+        <rect x="10" y="55" width="100" height="50" rx="10" fill="#101526" stroke="#2b3348" stroke-width="1"/>
+        <text x="60" y="77" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#8f99ad" letter-spacing="1">TRIGGER</text>
+        <text x="60" y="94" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#f5f7fb">Input / Task</text>
+
+        <rect x="148" y="55" width="120" height="50" rx="10" fill="#101526" stroke="#ffb869" stroke-width="1"/>
+        <text x="208" y="77" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#ffb869" letter-spacing="1">REASON</text>
+        <text x="208" y="94" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#f5f7fb">Plan + Context (MCP)</text>
+
+        <rect x="306" y="55" width="120" height="50" rx="10" fill="#101526" stroke="#ffb869" stroke-width="1"/>
+        <text x="366" y="77" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#ffb869" letter-spacing="1">ACT</text>
+        <text x="366" y="94" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#f5f7fb">Tools / APIs (A2A)</text>
+
+        <rect x="464" y="55" width="120" height="50" rx="10" fill="#101526" stroke="#4fe3ff" stroke-width="1"/>
+        <text x="524" y="77" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#4fe3ff" letter-spacing="1">EVALUATE</text>
+        <text x="524" y="94" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#f5f7fb">Confidence check</text>
+
+        <rect x="622" y="35" width="100" height="40" rx="10" fill="#101526" stroke="#ff4fa3" stroke-width="1"/>
+        <text x="672" y="53" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#ff4fa3" letter-spacing="1">ESCALATE</text>
+        <text x="672" y="68" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#f5f7fb">Human review</text>
+
+        <rect x="622" y="88" width="100" height="40" rx="10" fill="#101526" stroke="#ffb869" stroke-width="1"/>
+        <text x="672" y="106" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#ffb869" letter-spacing="1">COMPLETE</text>
+        <text x="672" y="121" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#f5f7fb">Output + log</text>
+
+        <rect x="750" y="55" width="100" height="50" rx="10" fill="#101526" stroke="#4fe3ff" stroke-width="1"/>
+        <text x="800" y="77" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#4fe3ff" letter-spacing="1">LEARN</text>
+        <text x="800" y="94" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#f5f7fb">Episodic memory</text>
+
+        <!-- Arrows main flow -->
+        <line x1="110" y1="80" x2="145" y2="80" stroke="#ffb869" stroke-width="1.5" marker-end="url(#arr)" opacity="0.7"/>
+        <line x1="268" y1="80" x2="303" y2="80" stroke="#ffb869" stroke-width="1.5" marker-end="url(#arr)" opacity="0.7"/>
+        <line x1="426" y1="80" x2="461" y2="80" stroke="#ffb869" stroke-width="1.5" marker-end="url(#arr)" opacity="0.7"/>
+
+        <!-- Evaluate → Escalate (above) -->
+        <line x1="584" y1="68" x2="619" y2="57" stroke="#ff4fa3" stroke-width="1.5" marker-end="url(#arr-red)" opacity="0.7"/>
+        <!-- Evaluate → Complete (below) -->
+        <line x1="584" y1="92" x2="619" y2="108" stroke="#ffb869" stroke-width="1.5" marker-end="url(#arr)" opacity="0.7"/>
+
+        <!-- Escalate → Complete -->
+        <line x1="672" y1="75" x2="672" y2="85" stroke="#ff4fa3" stroke-width="1.5" marker-end="url(#arr-red)" opacity="0.5"/>
+
+        <!-- Complete → Learn -->
+        <line x1="722" y1="108" x2="747" y2="95" stroke="#4fe3ff" stroke-width="1.5" marker-end="url(#arr-cyan)" opacity="0.7"/>
+        <!-- Escalate → Learn -->
+        <line x1="722" y1="55" x2="747" y2="67" stroke="#4fe3ff" stroke-width="1.5" marker-end="url(#arr-cyan)" opacity="0.5"/>
+
+        <!-- Feedback loop: Learn → Reason (curved path label) -->
+        <path d="M800 55 Q800 18 208 42" fill="none" stroke="#4fe3ff" stroke-width="1" stroke-dasharray="4,3" opacity="0.35"/>
+        <text x="510" y="26" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#4fe3ff" opacity="0.5" letter-spacing="1">FEEDBACK LOOP → EPISODIC MEMORY</text>
+
+        <!-- Labels -->
+        <text x="524" y="148" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#ff4fa3" opacity="0.7">low confidence → human</text>
+        <text x="524" y="158" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#ffb869" opacity="0.7">high confidence → complete</text>
+      </svg>
+    </div>
+
+    <p style="margin-bottom:20px;" data-reveal data-delay="2">
+      Productivity has shifted from raw prompting skill to verification strength, architectural clarity, and disciplined human oversight. In production environments, five moves matter most.
+    </p>
+
+    <div data-reveal data-delay="2">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Stop micromanaging with prompts. Specify outcomes and boundaries.</h4>
+          <p>Human value has moved upstream. Own the success criteria, taste, risk thresholds, and ethical guardrails. If you are still giving agents exhaustive step-by-step instructions, you are likely the real bottleneck.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Run thoughtful ensembles, not isolated agents.</h4>
+          <p>Parallel sub-agents in controlled contexts can surface diverse approaches and reduce single-point failures — but only with strong orchestration and observability. Fleet management, not individual prompting, is the higher-order skill.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Make failure-and-recovery a deliberate feature.</h4>
+          <p>Define clear success criteria, iteration limits, and escalation paths upfront. Real value often emerges on the second or third refined attempt — not the first optimistic draft. Autonomy without structured iteration is simply a faster way to scale mistakes.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Intervene only where judgment is irreplaceable.</h4>
+          <p>Debugging low-level syntax or routine formatting is rarely the best use of human attention. Reviewing strategic direction, ethical implications, exception handling, and long-term consequences is. The discipline is knowing exactly when — and when not — to step in.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Instrument everything. Treat observability as a product requirement.</h4>
+          <p>
+            Every agent action, tool call, hand-off, and human override should be logged with enough context to reconstruct why a decision was made. Observability is not optional telemetry — it is the foundation of accountability, debugging, and iterative improvement. If you cannot replay a failure, you cannot fix the system that caused it.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight" style="margin-top:18px;" data-reveal>
+      <div class="insight-label">The real scarcity in 2026</div>
+      <p>
+        Raw intelligence is rapidly becoming a commodity. What remains scarce is meaningful direction — the distinctly human capacity to decide which problems are worth solving, what trade-offs we are willing to accept, and what outcomes truly matter.
+      </p>
+    </div>
+
+    <div class="key-signal" data-reveal>
+      <div class="key-signal-icon">🔁</div>
+      <div class="key-signal-body">
+        <div class="key-signal-label">Key signal · Section 04</div>
+        <p class="key-signal-text">
+          The agentic shift is not from human to machine — it is from <strong>human as operator to human as architect</strong>. The most effective practitioners in 2026 spend less time prompting and more time designing the loops, constraints, and escalation rules that agents must operate within.
+        </p>
+      </div>
+    </div>
+
+    <div class="diagnostic" style="margin-top:14px;" data-reveal>
+      <h3>Self-assessment · Agentic systems</h3>
+      <ul class="diagnostic-list">
+        <li>
+          <span class="diagnostic-q">Q1</span>
+          For our most important agent, can we draw the full loop from trigger → tools → hand-offs → human review → logging?
+        </li>
+        <li>
+          <span class="diagnostic-q">Q2</span>
+          Do we have explicit iteration limits and escalation rules, or do agents just "keep trying" until something looks plausible?
+        </li>
+        <li>
+          <span class="diagnostic-q">Q3</span>
+          When an agent fails, is there a standard way to capture that failure and feed it back into design — or is it handled ad hoc?
+        </li>
+        <li>
+          <span class="diagnostic-q">Q4</span>
+          Can we replay any agent decision from the last 30 days — including the context it had and the tools it called — from our logs alone?
+        </li>
+      </ul>
+      <div class="scorer" data-scorer="agents">
+        <div class="scorer-checks">
+          <label class="scorer-check"><input type="checkbox" data-s="agents"> <span>Q1 Yes</span></label>
+          <label class="scorer-check"><input type="checkbox" data-s="agents"> <span>Q2 Yes</span></label>
+          <label class="scorer-check"><input type="checkbox" data-s="agents"> <span>Q3 Yes</span></label>
+          <label class="scorer-check"><input type="checkbox" data-s="agents"> <span>Q4 Yes</span></label>
+        </div>
+        <div class="scorer-result" id="score-agents">Score: <strong>0 / 4</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 5: PRODUCTION ─────────────────────────────── -->
+  <section class="section" id="production">
+    <header class="section-header" data-reveal>
+      <div class="section-index">05 · Realities</div>
+      <div class="section-title-wrap">
+        <h2 class="section-title">Production truths &amp; <span>what actually scales</span></h2>
+        <p class="section-kicker">Most failures are not model failures. They are system failures.</p>
+      </div>
+    </header>
+
+    <div class="why" data-reveal data-delay="1">
+      <div class="why-label">Why this matters</div>
+      <p>
+        Many agent initiatives stall not because the models are weak, but because the surrounding foundations are missing: stable processes, clean data, clear ownership, observability, and governance that scales with autonomy.
+      </p>
+    </div>
+
+    <div class="grid-2" data-reveal data-delay="2">
+      <div>
+        <p>
+          The highest returns come from applying agents to already-stable, time-consuming workflows — not from trying to fix broken processes with more intelligence. Speed without discipline simply creates faster, more expensive chaos.
+        </p>
+
+        <div class="rule-label">Watch for these warning signs</div>
+        <ul class="body-list">
+          <li><strong>The turnkey illusion.</strong> Promises of "plug-and-play" agents ignore the heavy lifting required in integration, ongoing calibration, monitoring, and exception handling.</li>
+          <li><strong>Silent degradation.</strong> Dashboards may show green while hallucinated or drifted outputs accumulate downstream, quietly eroding trust and outcomes.</li>
+          <li><strong>Generic convergence.</strong> Over-reliance on one-size-fits-all agents often produces safe but average results — delivering no sustainable competitive advantage.</li>
+          <li><strong>Vendor or framework lock-in.</strong> Logic embedded too deeply in proprietary platforms makes future migration painful or impossible.</li>
+          <li><strong>Metric theater.</strong> Activity metrics — API calls, tokens consumed, agent runs — rise while real business outcomes remain flat. Vanity observability is its own failure mode.</li>
+        </ul>
+
+        <div class="field-note" style="margin-top:18px;">
+          <div class="field-note-label">Field note · Cascading agent failure</div>
+          <p>A financial services team deployed a document-processing agent with no iteration limits. An ambiguous input triggered a retry loop — the agent called the same extraction tool 47 times in 90 seconds, saturating a downstream API and triggering a vendor rate-limit lockout that affected three other unrelated workflows. The observability dashboard showed "active runs" in green throughout.</p>
+          <p><strong>Lesson:</strong> Iteration caps, dead-letter queues, and cross-workflow blast-radius analysis are not optional. They are production-grade requirements from day one.</p>
+        </div>
+
+        <div class="field-note" style="margin-top:10px;">
+          <div class="field-note-label">Field note · Silent semantic drift</div>
+          <p>An e-commerce team's product-description agent was delivering outputs that tested well against their original golden set. Six months in, a prompt library update quietly shifted the agent's tone. Customer support tickets citing "robotic" or "off-brand" copy doubled over eight weeks before anyone traced the root cause — because the quality dashboard was measuring format compliance, not semantic alignment with brand guidelines.</p>
+          <p><strong>Lesson:</strong> Evals must be semantically grounded in real outcomes, not just structural checks. Drift is invisible until it isn't.</p>
+        </div>
+      </div>
+
+      <aside>
+        <div class="diagnostic">
+          <h3>The anti-hype test</h3>
+          <p style="font-size:0.9rem; color:var(--text-soft); margin-bottom:6px;">
+            Before deploying any agent, ask three questions:
+          </p>
+          <ul class="diagnostic-list">
+            <li>
+              <span class="diagnostic-q">Q1</span>
+              Can we independently measure the real business ROI of this agent — beyond activity metrics?
+            </li>
+            <li>
+              <span class="diagnostic-q">Q2</span>
+              If the primary vendor, framework, or model provider disappeared tomorrow, could we continue operating with acceptable performance?
+            </li>
+            <li>
+              <span class="diagnostic-q">Q3</span>
+              Does this actually solve a high-cost, recurring problem — or does it simply add more surface area, complexity, and potential failure points?
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <div class="key-signal" style="margin-top:20px;" data-reveal>
+      <div class="key-signal-icon">⚠</div>
+      <div class="key-signal-body">
+        <div class="key-signal-label">Key signal · Section 05</div>
+        <p class="key-signal-text">
+          <strong>Stable processes first, automation second.</strong> Organizations that deploy agents into chaotic workflows don't fix the chaos — they scale it. The most effective agentic programs in 2026 begin with a process audit, not a model selection.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 6: SCARCITY ───────────────────────────────── -->
+  <section class="section" id="scarce">
+    <header class="section-header" data-reveal>
+      <div class="section-index">06 · Scarcity</div>
+      <div class="section-title-wrap">
+        <h2 class="section-title">What stays human <span>when intelligence is cheap</span></h2>
+        <p class="section-kicker">The center of gravity shifts from production to discernment.</p>
+      </div>
+    </header>
+
+    <div class="why" data-reveal data-delay="1">
+      <div class="why-label">Why this matters</div>
+      <p>
+        As models become faster, cheaper, and more capable, the question is no longer "What can we make the system do?" but "Which outcomes are worth pursuing — and what are we willing to trade to get them?"
+      </p>
+    </div>
+
+    <div class="grid-2" data-reveal data-delay="2">
+      <div class="card">
+        <h3>Irreducibly human work</h3>
+        <p>
+          Some functions resist automation not because models are weak, but because the work itself is grounded in lived experience and value judgment:
+        </p>
+        <ul class="body-list">
+          <li><strong>Setting direction.</strong> Choosing which problems matter for the organization, community, or field.</li>
+          <li><strong>Holding the line.</strong> Deciding which trade-offs are unacceptable, even when they look efficient on paper.</li>
+          <li><strong>Interpreting impact.</strong> Understanding how decisions land on real people, not just metrics.</li>
+          <li><strong>Earning trust.</strong> Relationships, credibility, and accountability cannot be delegated to inference engines.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>The auditor role · Human-in-the-loop</h3>
+        <p>
+          In mature systems, humans are not co-pilots for every step — they are exception handlers. A practical pattern:
+        </p>
+        <ul class="body-list">
+          <li><strong>Confidence thresholds.</strong> Agents proceed autonomously above a defined confidence level (for example, 85%) and route to a human auditor below it.</li>
+          <li><strong>Structured review.</strong> Auditors do not "eyeball" outputs; they follow checklists tied to risk, values, and regulatory requirements.</li>
+          <li><strong>Feedback loops.</strong> Every audited exception feeds back into prompts, policies, or training data — tightening the system over time.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- EMERGING ROLES — new -->
+    <div class="memory-card" style="margin-top:18px;" data-reveal>
+      <div class="memory-title">Emerging roles · The human workforce shifts upstream</div>
+      <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:12px;">
+        As agents absorb execution-layer work, new human roles crystallize around evaluation, oversight, and direction — not replacement, but repositioning. Organizations deploying at scale are already creating dedicated titles for these functions.
+      </p>
+      <div class="roles-grid">
+        <div class="role-item">
+          <div class="role-name">AI Evaluator / Eval Engineer</div>
+          <div class="role-tag">New title · 2025–2026</div>
+          <p>Designs and maintains evals that measure real outcomes — not format compliance. Owns the feedback loop between agent behavior and ground truth. The person responsible for catching semantic drift before customers do.</p>
+        </div>
+        <div class="role-item">
+          <div class="role-name">AI Auditor</div>
+          <div class="role-tag">Emerging · Regulated industries first</div>
+          <p>Reviews agent decision traces against policy, values, and regulatory requirements. Does not re-do the work — reviews whether the agent's reasoning was permissible, auditable, and aligned with organizational commitments.</p>
+        </div>
+        <div class="role-item">
+          <div class="role-name">AI Fleet Manager</div>
+          <div class="role-tag">Emerging · Large-scale deployments</div>
+          <p>Oversees a portfolio of agents the way an SRE manages infrastructure: capacity, cost FinOps, incident response, and performance trends across agents — not individual interactions.</p>
+        </div>
+        <div class="role-item">
+          <div class="role-name">Prompt &amp; System Architect</div>
+          <div class="role-tag">Evolution of: senior ML/product roles</div>
+          <p>Owns the behavioral contract of agents — success criteria, constitutional constraints, tool permissions, and escalation thresholds. The upstream designer that traditional prompt engineers are evolving into.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="memory-card" style="margin-top:18px;" data-reveal>
+      <div class="memory-title">Value injection · Programming the guardrails</div>
+      <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:8px;">
+        "Judgment" becomes actionable when leaders treat values as first-class inputs to the system, not just culture statements. A simple framework:
+      </p>
+      <div class="memory-grid">
+        <div class="memory-item">
+          <div class="memory-label">Articulate</div>
+          <p>Translate abstract values ("fairness", "safety") into concrete constraints, red lines, and trade-off rules.</p>
+        </div>
+        <div class="memory-item">
+          <div class="memory-label">Encode</div>
+          <p>Implement those rules as policies, prompts, and constitutional memory that agents must consult before finalizing high-stakes decisions.</p>
+        </div>
+        <div class="memory-item">
+          <div class="memory-label">Enforce</div>
+          <p>Monitor where values are actually applied — and where they are silently bypassed in the name of speed or convenience.</p>
+        </div>
+        <div class="memory-item">
+          <div class="memory-label">Evolve</div>
+          <p>Revisit encoded values quarterly. As systems grow in autonomy, constraints must be reviewed, not just maintained.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="diagnostic" style="margin-top:14px;" data-reveal>
+      <h3>Self-assessment · Human role</h3>
+      <ul class="diagnostic-list">
+        <li>
+          <span class="diagnostic-q">Q1</span>
+          Do we have explicit confidence thresholds that determine when humans must be pulled into the loop?
+        </li>
+        <li>
+          <span class="diagnostic-q">Q2</span>
+          Can we show, in our logs, where organizational values were consulted or enforced in a decision path?
+        </li>
+        <li>
+          <span class="diagnostic-q">Q3</span>
+          If a regulator or board asked, could we explain not just what the system did, but why it was allowed to do it?
+        </li>
+      </ul>
+      <div class="scorer" data-scorer="human2">
+        <div class="scorer-checks">
+          <label class="scorer-check"><input type="checkbox" data-s="human2"> <span>Q1 Yes</span></label>
+          <label class="scorer-check"><input type="checkbox" data-s="human2"> <span>Q2 Yes</span></label>
+          <label class="scorer-check"><input type="checkbox" data-s="human2"> <span>Q3 Yes</span></label>
+        </div>
+        <div class="scorer-result" id="score-human2">Score: <strong>0 / 3</strong></div>
+      </div>
+    </div>
+
+    <div class="key-signal" data-reveal>
+      <div class="key-signal-icon">🎯</div>
+      <div class="key-signal-body">
+        <div class="key-signal-label">Key signal · Section 06</div>
+        <p class="key-signal-text">
+          The leaders who thrive in the next decade will not be those who delegate the most — but those who <strong>govern the most clearly</strong>. The scarcest resource is not intelligence. It is the courage to define what is worth building — and what is not.
+        </p>
+      </div>
+    </div>
+
+    <div class="principles" data-reveal>
+      <div class="principles-title">Ten principles for the next decade</div>
+      <ul class="principles-list">
+        <li><strong>Clarity before automation.</strong> Define the problem and the "why" before you generate anything.</li>
+        <li><strong>Judgment over volume.</strong> More output is not more value.</li>
+        <li><strong>Architecture is leverage.</strong> Models are components; systems are the product.</li>
+        <li><strong>Governance is the moat.</strong> Oversight, observability, and accountability compound over time.</li>
+        <li><strong>Direction is the new scarcity.</strong> Deciding what not to build is as important as what you ship.</li>
+        <li><strong>Friction with purpose.</strong> Keep enough resistance to force real thinking.</li>
+        <li><strong>Failure as a feature.</strong> Design for detection, recovery, and learning — not just success.</li>
+        <li><strong>Human ownership.</strong> If no one can explain it, it isn't ready for production.</li>
+        <li><strong>Optionality over lock-in.</strong> Keep room to swap models, tools, and vendors.</li>
+        <li><strong>Systems that remember why.</strong> Capture intent, not just outputs.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+
+<!-- CLOSING -->
+<footer class="closing">
+  <div class="closing-inner" data-reveal>
+    <h2>
+      The organizations that win this decade will not be the ones that deploy the most agents — but the ones that build <span>the clearest architectures, the sharpest judgment, and the most accountable systems of shared intelligence.</span>
+    </h2>
+    <p class="closing-tagline">Strategic Intelligence · Architecture · Judgment · Production · Governance</p>
+
+    <div class="closing-divider"></div>
+
+    <div class="closing-next">
+      <div class="closing-next-label">Coming in Vol. 2</div>
+      <p>Evaluating agentic systems in production: metrics that matter, evals that lie, and how to instrument for real accountability — not just activity.</p>
+    </div>
+
+    <div class="closing-footer-row">
+      <span class="closing-footer-item">Practitioner Perspectives</span>
+      <span class="closing-footer-sep"></span>
+      <span class="closing-footer-item">Vol. 1 · March 2026</span>
+      <span class="closing-footer-sep"></span>
+      <span class="closing-footer-item">Field Notes from AI Systems in Production</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const topBar = document.getElementById('topProgressBar');
+  const commandProgress = document.getElementById('commandProgress');
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.command-nav-list a');
+  const mobileOverlay = document.getElementById('mobileMenuOverlay');
+  const mobileToggle = document.getElementById('mobileMenuToggle');
+  const mobileClose = document.getElementById('mobileMenuClose');
+  const mobileLinks = document.querySelectorAll('.mobile-menu-list a');
+  const revealEls = document.querySelectorAll('[data-reveal]');
+
+  // ── SCROLL PROGRESS ────────────────────────────────────────
+  function updateProgress() {
+    const scrollTop = window.scrollY || window.pageYOffset;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) : 0;
+    const pct = (progress * 100).toFixed(2) + '%';
+    if (topBar) topBar.style.width = pct;
+    if (commandProgress) commandProgress.style.height = pct;
+  }
+
+  // ── ACTIVE NAV ──────────────────────────────────────────────
+  function updateActiveNav() {
+    let currentId = null;
+    const offset = 120;
+    sections.forEach(section => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= offset && rect.bottom > offset) currentId = section.id;
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('data-section') === currentId);
+    });
+  }
+
+  // ── SCROLL REVEAL ───────────────────────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // ── MOBILE MENU ─────────────────────────────────────────────
+  function openMobileMenu() { mobileOverlay.style.display = 'block'; }
+  function closeMobileMenu() { mobileOverlay.style.display = 'none'; }
+
+  window.addEventListener('scroll', () => { updateProgress(); updateActiveNav(); }, { passive: true });
+  mobileToggle.addEventListener('click', openMobileMenu);
+  mobileClose.addEventListener('click', closeMobileMenu);
+  mobileOverlay.addEventListener('click', e => { if (e.target === mobileOverlay) closeMobileMenu(); });
+  mobileLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
+
+  updateProgress();
+  updateActiveNav();
+})();
+</script>
+
+</body>
+</html>
